@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerColonia - Control de Accesos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Pantalla de Login / Selección de Perfil -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <h2>🏢 PowerColonia</h2>
+            <p style="margin-bottom: 25px; color: #666;">Selecciona tu perfil para ingresar al sistema</p>
+            <button onclick="iniciarSesion('admin')" class="login-btn btn-admin">👥 Entrar como Administrador</button>
+            <button onclick="iniciarSesion('guardia')" class="login-btn btn-guardia">🚗 Entrar como Caseta / Guardia</button>
+            <button onclick="iniciarSesion('residente')" class="login-btn btn-residente">🏠 Entrar como Residente</button>
+        </div>
+    </div>
+
+    <!-- Panel de Control Principal -->
+    <div id="main-dashboard" class="dashboard" style="display: none;">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h2>🏢 PowerColonia</h2>
+            </div>
+            <ul style="display: flex; flex-direction: column; height: 85%;">
+                <li id="menu-admin"><button onclick="mostrarSeccion('residentes')">👥 Administración</button></li>
+                <li id="menu-guardia"><button onclick="mostrarSeccion('visitas')">🚗 Caseta / Guardias</button></li>
+                <li id="menu-residente"><button onclick="mostrarSeccion('portal-residente')">🏠 Portal Residente</button></li>
+                <li style="margin-top: auto;"><button onclick="cerrarSesion()" style="color: #ff6b6b;">🚪 Cambiar Perfil</button></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            
+            <!-- LISTA DE SUGERENCIAS PARA LOS MOTIVOS DE VISITA -->
+            <datalist id="opcionesVisita">
+                <option value="Familiar / Amigo"></option>
+                <option value="Repartidor / Delivery"></option>
+                <option value="Servicio (Internet, Plomero)"></option>
+                <option value="Evento / Fiesta"></option>
+                <option value="Uber / Taxi"></option>
+            </datalist>
+
+            <!-- ADMIN -->
+            <section id="residentes" class="seccion">
+                <div class="header-section">
+                    <h3>Panel de Administración</h3>
+                    <p>Gestiona los habitantes de PowerColonia.</p>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>➕ Alta de Residente</h4>
+                        <form id="formResidente">
+                            <select id="resDepto" required><option value="">Selecciona el cuarto...</option></select>
+                            <input type="text" id="resNombre" placeholder="Nombre Completo" required>
+                            <input type="text" id="resTel" placeholder="Teléfono" required>
+                            <button type="submit" class="btn-primary">Registrar Residente</button>
+                        </form>
+                        <div id="mensajeResidente" class="mensaje"></div>
+                    </div>
+                    <div class="card">
+                        <h4>📋 Directorio de Residentes</h4>
+                        <table class="data-table">
+                            <thead><tr><th>Depto</th><th>Nombre</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+                            <tbody id="tablaResidentes"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CASETA -->
+            <section id="visitas" class="seccion">
+                <div class="header-section">
+                    <h3>Control de Caseta</h3>
+                    <p>Registro de entradas y salidas.</p>
+                    <button onclick="actualizarUICaseta()" class="btn-primary btn-sm" style="margin-top: 10px;">🔄 Refrescar Pantalla</button>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🛂 1. Validar Invitación (Con Código)</h4>
+                        <form id="formValidarCodigo">
+                            <input type="text" id="codigoAcceso" placeholder="Ingresa el código" required>
+                            <button type="submit" class="btn-primary">Validar y Abrir Barrera</button>
+                        </form>
+                        <div id="mensajeValidacion" class="mensaje"></div>
+
+                        <hr style="margin: 25px 0; border: 1px solid #f0f2f5;">
+
+                        <h4>🚶 2. Visita Sorpresa (Llegan a Tocar)</h4>
+                        <form id="formVisitaWalkIn">
+                            <input type="text" id="visNombre" placeholder="Nombre del Visitante" required>
+                            <input type="number" id="visDepto" placeholder="Depto a Visitar (ej. 204)" required>
+                            
+                            <!-- CAMBIO A INPUT DE TEXTO LIBRE CON AUTOCOMPLETADO -->
+                            <input type="text" id="visTipo" list="opcionesVisita" placeholder="Motivo (Escribe o selecciona)" required>
+                            
+                            <button type="submit" class="btn-warning">Notificar al Residente</button>
+                        </form>
+                        <div id="mensajeVisitaWalkIn" class="mensaje"></div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- TABLA: Gente atorada en la pluma -->
+                        <div class="card" style="border-left: 4px solid #ffc107;">
+                            <h4 style="color: #ffc107; margin-bottom: 5px;">⏳ Esperando Autorización en Puerta</h4>
+                            <table class="data-table">
+                                <thead><tr><th>Visitante</th><th>Avisó al Depto</th></tr></thead>
+                                <tbody id="tablaVisitasPendientesGuardia"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- TABLA NORMAL: Gente adentro -->
+                        <div class="card">
+                            <h4>⏱️ Visitas Adentro del Edificio</h4>
+                            <table class="data-table">
+                                <thead><tr><th>Visitante</th><th>Depto</th><th>Entrada</th><th>Acción</th></tr></thead>
+                                <tbody id="tablaVisitasActivas"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RESIDENTE -->
+            <section id="portal-residente" class="seccion">
+                <div class="header-section">
+                    <h3>Portal del Residente</h3>
+                    <p>Genera invitaciones, autoriza personas en la puerta y ve tu historial.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🎟️ Pre-Autorizar Visita</h4>
+                        <form id="formCrearInvitacion">
+                            <input type="number" id="invDepto" placeholder="Tu número de Depto" required>
+                            <input type="text" id="invNombre" placeholder="Nombre de tu invitado" required>
+                            
+                            <!-- CAMBIO A INPUT DE TEXTO LIBRE CON AUTOCOMPLETADO -->
+                            <input type="text" id="invTipo" list="opcionesVisita" placeholder="Motivo (Escribe o selecciona)" required>
+                            
+                            <button type="submit" class="btn-success">Generar Código</button>
+                        </form>
+                        <div id="mensajeInvitacion" class="mensaje"></div>
+                    </div>
+
+                    <div class="card">
+                        <h4>📜 Mi Panel</h4>
+                        <form id="formMisVisitas" style="flex-direction: row;">
+                            <input type="number" id="miNumDepto" placeholder="Mi Depto" required style="flex: 1;">
+                            <button type="submit" class="btn-primary">Ver mis alertas e historial</button>
+                        </form>
+                        
+                        <!-- Contenedor para gente tocando la puerta -->
+                        <div id="listaAutorizacionesPendientes" class="mt-20"></div>
+                        
+                        <!-- Historial -->
+                        <div id="listaMisVisitas" class="mt-20"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function mostrarSeccion(id) {
+            document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('activa'));
+            document.getElementById(id).classList.add('activa');
+            document.querySelectorAll('.mensaje').forEach(msg => msg.innerHTML = '');
+        }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

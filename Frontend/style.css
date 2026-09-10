@@ -1,0 +1,55 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+body { background-color: #f0f2f5; color: #333; }
+
+/* Estilos de la Pantalla de Login */
+.login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #1a1e2b; }
+.login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; width: 400px; }
+.login-btn { display: block; width: 100%; margin-bottom: 15px; padding: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600; transition: transform 0.2s, opacity 0.2s; }
+.login-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+.btn-admin { background-color: #0d6efd; color: white; }
+.btn-guardia { background-color: #ffc107; color: black; }
+.btn-residente { background-color: #198754; color: white; }
+
+/* Dashboard General */
+.dashboard { display: flex; height: 100vh; }
+.sidebar { width: 260px; background-color: #1a1e2b; color: white; display: flex; flex-direction: column; }
+.logo-area { padding: 25px 20px; background-color: #11141d; border-bottom: 1px solid #2d3345; }
+.sidebar ul { list-style: none; padding: 20px 10px; }
+.sidebar button { width: 100%; background: transparent; border: none; color: #a0a5b5; text-align: left; padding: 12px 15px; font-size: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; transition: all 0.3s;}
+.sidebar button:hover { background-color: #2d3345; color: white; }
+
+.content { flex: 1; padding: 40px; overflow-y: auto; }
+.seccion { display: none; animation: fadeIn 0.4s ease; }
+.seccion.activa { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.header-section { margin-bottom: 30px; }
+.header-section h3 { font-size: 24px; color: #1a1e2b; }
+.header-section p { color: #6c757d; font-size: 14px; margin-top: 5px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; }
+.mt-20 { margin-top: 20px; }
+.text-center { text-align: center; }
+.text-muted { color: #6c757d; }
+
+.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eaeaea; }
+.card h4 { margin-bottom: 20px; color: #2c3e50; font-size: 16px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+
+form { display: flex; flex-direction: column; gap: 12px; }
+input, select { padding: 10px 12px; border: 1px solid #dce1e6; border-radius: 6px; font-size: 14px; outline: none; }
+input:focus, select:focus { border-color: #007bff; }
+
+button { padding: 10px 15px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
+.btn-primary { background-color: #0d6efd; color: white; }
+.btn-primary:hover { background-color: #0b5ed7; }
+.btn-success { background-color: #198754; color: white; }
+.btn-success:hover { background-color: #157347; }
+.btn-danger { background-color: #dc3545; color: white; }
+.btn-warning { background-color: #ffc107; color: #000; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+.mensaje { margin-top: 10px; font-size: 14px; font-weight: 500; }
+
+.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.data-table th { text-align: left; background-color: #f8f9fa; padding: 10px; font-size: 13px; color: #6c757d; border-bottom: 2px solid #dee2e6; }
+.data-table td { padding: 12px 10px; border-bottom: 1px solid #f0f2f5; font-size: 14px; }
